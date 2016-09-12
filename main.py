@@ -15,11 +15,53 @@
 # limitations under the License.
 #
 import webapp2
+from caesar import encrypt
 
-class MainHandler(webapp2.RequestHandler):
+page_header = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Formation</title>
+    </head>
+    <body>
+        <h1>Enter text</h1>
+"""
+page_footer = """
+</body>
+</html>
+"""
+
+form = """
+<form method="post">
+    <div>
+        <label for="rot">Rotate by:</label>
+            <input type="text" name="rot" value="{0}">
+            <p class="error"></p>
+    </div>
+    <textarea type="text" name="text">{1}</textarea>
+    <br>
+    <input type="submit">
+</form>
+"""
+
+# {0} can also be "%s"
+
+class Rot13(webapp2.RequestHandler):
+
     def get(self):
-        self.response.write('Hello world!')
+
+        temp = ""
+        response = page_header + form.format(temp, temp) + page_footer
+        self.response.write(response)
+
+    def post(self):
+        rot_num = int(self.request.get("rot"))
+        rot_answer = self.request.get("text")
+        answer = encrypt(rot_answer, rot_num)
+
+        response = page_header + form.format(rot_num, answer)
+        self.response.write(response)
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', Rot13)
 ], debug=True)
