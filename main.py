@@ -16,6 +16,7 @@
 #
 import webapp2
 from caesar import encrypt
+import cgi
 
 page_header = """
 <!DOCTYPE html>
@@ -58,6 +59,7 @@ class Rot13(webapp2.RequestHandler):
         rot_num = int(self.request.get("rot"))
         rot_answer = self.request.get("text")
         answer = encrypt(rot_answer, rot_num)
+        answer = cgi.escape(answer)
 
         response = page_header + form.format(rot_num, answer)
         self.response.write(response)
